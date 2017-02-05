@@ -53,8 +53,8 @@ def readLogFile(filename, hasAlignmentWord = True, quiet = False):
   print(filename)
 
   # First two lines are special
-  keys = f.readline().rstrip('\n').split(',')
-  fmt = f.readline().rstrip('\n')
+  keys = f.readline().decode('utf8').rstrip('\n').split(',')
+  fmt = f.readline().decode('utf8').rstrip('\n')
 
   sz = struct.calcsize(fmt)
   ncols = len(fmt)
@@ -83,7 +83,10 @@ def readLogFile(filename, hasAlignmentWord = True, quiet = False):
   else:
     wholeFile = f.read()
     # split by alignment word
-    chunks = wholeFile.split('\xaa\xbb')
+    print("bla")
+    chunks = wholeFile.split(b'\xaa\xbb')
+    print("bla2")
+
     for chunk in chunks:
       if len(chunk) == sz:
         # good chunk
@@ -94,7 +97,9 @@ def readLogFile(filename, hasAlignmentWord = True, quiet = False):
   if not quiet:
     print('Read data of length'),
     print(data[keys[0]].shape[0])
-    print 'Avg data rate = '+str(1000/float(mean(diff(data['t']))))+' Hz'
+    print ('Avg data rate = ')
+    print (str(1000/float(mean(diff(data['t'])))))
+    print (' Hz')
 
   return data
 
@@ -145,7 +150,7 @@ def plotTrial(filename, pathRoot = None, trialType = None, trimRange = None, vli
     trialnum = int(filename)
     filename = findFileByTrialNum(trialnum, pathRoot)[0]
   except:
-    print 'Trial not found!', filename
+    print ('Trial not found!', filename)
     return
 
   beQuiet = (trialType == 'noplot')
